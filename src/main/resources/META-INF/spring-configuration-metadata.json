@@ -1,0 +1,46 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.github.slamdev.spring.boot.gcp.GcpProperties",
+      "name": "google.cloud",
+      "type": "com.github.slamdev.spring.boot.gcp.GcpProperties"
+    },
+    {
+      "sourceType": "com.github.slamdev.spring.boot.gcp.GcpProperties",
+      "name": "google.cloud.spanner",
+      "type": "com.github.slamdev.spring.boot.gcp.GcpProperties$Spanner"
+    },
+    {
+      "sourceType": "com.github.slamdev.spring.boot.gcp.GcpProperties",
+      "name": "google.cloud.storage",
+      "type": "com.github.slamdev.spring.boot.gcp.GcpProperties$Storage"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.github.slamdev.spring.boot.gcp.GcpProperties",
+      "name": "google.cloud.credentials-resource",
+      "description": "The location of the Service Account key file in JSON format from the Google Developers Console or a stored user credential using the format supported by the Cloud SDK.",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.github.slamdev.spring.boot.gcp.GcpProperties",
+      "name": "google.cloud.project-id",
+      "description": "Google Cloud project id.",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.github.slamdev.spring.boot.gcp.GcpProperties$Spanner",
+      "name": "google.cloud.spanner.instance",
+      "description": "Spanner instance id.",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.github.slamdev.spring.boot.gcp.GcpProperties$Spanner",
+      "name": "google.cloud.spanner.database",
+      "description": "Spanner database name.",
+      "type": "java.lang.String"
+    }
+  ]
+}

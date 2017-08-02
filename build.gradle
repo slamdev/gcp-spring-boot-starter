@@ -1,0 +1,23 @@
+plugins {
+    id 'idea'
+    id 'java-library'
+    id 'io.spring.dependency-management' version '1.0.3.RELEASE'
+}
+
+group 'com.github.slamdev'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    jcenter()
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation' << '-Werror'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:1.5.6.RELEASE'
+    }
+}

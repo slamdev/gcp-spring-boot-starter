@@ -22,9 +22,9 @@ public class GcpProperties {
      */
     private String projectId;
 
-    private Spanner forSpanner;
+    private Spanner spanner;
 
-    private Storage forStorage;
+    private Storage storage;
 
     @Data
     public static class Spanner {

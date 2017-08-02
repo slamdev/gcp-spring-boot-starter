@@ -11,33 +11,51 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
+
+import java.io.IOException;
 
 @EnableConfigurationProperties(GcpProperties.class)
 @Configuration
 public class GcpAutoConfiguration {
 
-    @RequiredArgsConstructor
+    @ConditionalOnClass(GoogleCredentials.class)
+    @Configuration
+    public static class ForGoogleCredentials {
+
+        @ConditionalOnMissingBean
+        @Bean
+        public GoogleCredentials googleCredentials(Environment environment, ResourceLoader resourceLoader) throws IOException {
+            String path = environment.getProperty("google.cloud.credentials-resource");
+            return GoogleCredentials.fromStream(resourceLoader.getResource(path).getInputStream());
+        }
+    }
+
     @ConditionalOnClass(value = Storage.class)
     @Configuration
     public static class ForStorage {
 
-        private final GcpProperties properties;
-
-        private final GoogleCredentials googleCredentials;
-
         @ConditionalOnMissingBean
         @Bean
-        public Storage storage() {
+        public Storage storage(GoogleCredentials googleCredentials, Environment environment) {
             return StorageOptions.newBuilder()
                     .setCredentials(googleCredentials)
-                    .setProjectId(properties.getProjectId())
+                    .setProjectId(environment.getProperty("google.cloud.project-id"))
                     .build()
                     .getService();
         }
 
+
+    }
+
+    @ConditionalOnClass(value = Storage.class)
+    @Configuration
+    public static class ForStorageResource {
+
         @ConditionalOnMissingBean
         @Bean
-        public StorageResourceLoaderBeanPostProcessor storageResourceLoaderBeanPostProcessor(Storage storage) {
+        public static StorageResourceLoaderBeanPostProcessor storageResourceLoaderBeanPostProcessor(Storage storage) {
             return new StorageResourceLoaderBeanPostProcessor(storage);
         }
     }
@@ -53,7 +71,7 @@ public class GcpAutoConfiguration {
 
         @ConditionalOnMissingBean
         @Bean
-        public DatabaseClient storage() {
+        public DatabaseClient databaseClient() {
             SpannerOptions options = SpannerOptions.newBuilder()
                     .setProjectId(properties.getProjectId())
                     .setNumChannels(50)
@@ -64,8 +82,8 @@ public class GcpAutoConfiguration {
                     .setCredentials(googleCredentials)
                     .build();
             Spanner spanner = options.getService();
-            DatabaseId databaseId = DatabaseId.of(properties.getProjectId(), properties.getForSpanner().getInstance(),
-                    properties.getForSpanner().getDatabase());
+            DatabaseId databaseId = DatabaseId.of(properties.getProjectId(), properties.getSpanner().getInstance(),
+                    properties.getSpanner().getDatabase());
             return spanner.getDatabaseClient(databaseId);
         }
     }

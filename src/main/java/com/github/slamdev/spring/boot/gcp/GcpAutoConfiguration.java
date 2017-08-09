@@ -8,6 +8,7 @@ import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ import java.io.IOException;
 @Configuration
 public class GcpAutoConfiguration {
 
-    @ConditionalOnClass(GoogleCredentials.class)
+    @ConditionalOnProperty("google.cloud.credentials-resource")
     @Configuration
     public static class ForGoogleCredentials {
 
@@ -32,7 +33,8 @@ public class GcpAutoConfiguration {
         }
     }
 
-    @ConditionalOnClass(value = Storage.class)
+    @ConditionalOnClass(Storage.class)
+    @ConditionalOnProperty({"google.cloud.project-id", "google.cloud.credentials-resource"})
     @Configuration
     public static class ForStorage {
 
@@ -45,11 +47,9 @@ public class GcpAutoConfiguration {
                     .build()
                     .getService();
         }
-
-
     }
 
-    @ConditionalOnClass(value = Storage.class)
+    @ConditionalOnProperty({"google.cloud.project-id", "google.cloud.credentials-resource"})
     @Configuration
     public static class ForStorageResource {
 
@@ -61,7 +61,8 @@ public class GcpAutoConfiguration {
     }
 
     @RequiredArgsConstructor
-    @ConditionalOnClass(value = Storage.class)
+    @ConditionalOnClass(DatabaseClient.class)
+    @ConditionalOnProperty({"google.cloud.credentials-resource", "google.cloud.project-id", "google.cloud.spanner.instance", "google.cloud.spanner.database"})
     @Configuration
     public static class ForSpanner {
 

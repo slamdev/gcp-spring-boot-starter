@@ -110,6 +110,10 @@ public class StorageResource extends AbstractResource implements WritableResourc
         return new StorageResource(storage, bucketName, relativeKey);
     }
 
+    public boolean delete() {
+        return storage.delete(BlobId.of(bucketName, objectName));
+    }
+
     private Blob getObjectMetadata() {
         try {
             BlobId id = BlobId.of(bucketName, objectName);
